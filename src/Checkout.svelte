@@ -87,7 +87,7 @@
         timeID = setInterval(async () => {
           const res = await wohemamaApi.get('/api/orders', { params:  { outTradeNo } })
           console.log(res)
-          if (res.data.status && res.data.status !== 'init') {
+          if (res.data.status && res.data.status === '支付成功') {
             destroySelf()
             const target = document.querySelector('body')
             new Result({
@@ -282,8 +282,7 @@
             {#if qrCodeValue}
               <QrCode size={150} value={qrCodeValue} />
             {:else if payMethod === 'alipay'}
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <iframe src={payUrl} height="150" width="150" scrolling="no" />
+              <iframe src={payUrl} title="支付宝二维码" />
             {/if}
           </div>
         </div>

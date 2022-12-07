@@ -1,9 +1,15 @@
 <script>
   export let status;
+  let nodeRef;
+
+  function destroySelf() {
+    nodeRef.parentNode.removeChild(nodeRef);
+  }
 </script>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div
+  bind:this={nodeRef}
   class="fixed z-10 inset-0 overflow-y-auto"
   aria-labelledby="modal-title"
   role="dialog"
@@ -53,17 +59,17 @@
           </h3>
           <div class="mt-2">
             <p class="text-sm text-gray-500">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Consequatur amet labore.
+              我们已收到您的订单，感谢您的购买，我们会第一时间发货，请耐心等待！
             </p>
           </div>
         </div>
       </div>
       <div class="mt-5 sm:mt-6">
         <button
+          on:click={destroySelf}
           type="button"
           class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-          >继续购物</button
+          >继续浏览</button
         >
       </div>
     </div>
