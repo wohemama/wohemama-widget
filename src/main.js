@@ -9,7 +9,7 @@ window.WohemamaCartSettings = {
 const target = document.querySelector('body')
 
 document.addEventListener('click', (e) => {
-  if (e.target.getAttribute('class') === 'wohemama-cart-add-item') {
+  if (e.target.getAttribute('class').split(' ').includes('wohemama-cart-add-item')) {
     new App({
       target,
       props: {
