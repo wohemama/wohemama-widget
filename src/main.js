@@ -15,6 +15,7 @@ document.addEventListener("click", (e) => {
     e.target.getAttribute("class").split(" ").includes("wohemama-cart-add-item")
   ) {
     if (widget) widget.$destroy();
+    console.log(e.target.dataset)
     widget = new App({
       target,
       props: {
