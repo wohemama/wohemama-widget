@@ -1,21 +1,26 @@
-import './app.css'
-import App from './App.svelte'
+import "./app.css";
+import App from "./App.svelte";
 
 window.WohemamaCartSettings = {
-  publicApiKey: 'wuzhenyu2@mail.smallsticker.com',
+  publicApiKey: "wuzhenyu2@mail.smallsticker.com",
   shipping: 0,
-}
+};
 
-const target = document.querySelector('body')
+const target = document.querySelector("body");
+let widget = undefined;
 
-document.addEventListener('click', (e) => {
-  if (e.target.getAttribute('class').split(' ').includes('wohemama-cart-add-item')) {
-    new App({
+document.addEventListener("click", (e) => {
+  if (
+    e.target.getAttribute("class") &&
+    e.target.getAttribute("class").split(" ").includes("wohemama-cart-add-item")
+  ) {
+    if (widget) widget.$destroy();
+    widget = new App({
       target,
       props: {
         detail: e.target.dataset,
         dataset: { shipping: window.WohemamaCartSettings.shipping },
       },
-    })
+    });
   }
-})
+});
