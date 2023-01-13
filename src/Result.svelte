@@ -1,5 +1,6 @@
 <script>
   export let status;
+  export let conent;
   let nodeRef;
 
   function destroySelf() {
@@ -59,7 +60,7 @@
           </h3>
           <div class="mt-2">
             <p class="text-sm text-gray-500">
-              我们已收到您的订单，感谢您的购买，我们会第一时间发货，请耐心等待！
+              {conent || '我们已收到您的订单，感谢您的购买，我们会第一时间发货，请耐心等待！'}
             </p>
           </div>
         </div>

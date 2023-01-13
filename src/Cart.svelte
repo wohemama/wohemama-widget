@@ -2,8 +2,7 @@
   import Big from 'big.js';
 	export let parsedCart = JSON.parse(localStorage.cartData ?? null) || []
   export let dataset
-  console.log(parsedCart)
-  
+    
 	$: {
 		localStorage.cartData = JSON.stringify(parsedCart)
 	}
@@ -27,7 +26,7 @@
         {#each parsedCart as item, i }
         <li class="py-6 flex">
           <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
-            <img src={location.origin + item.itemImage} alt="product" class="w-full h-full object-center object-cover">
+            <img src={'https://backend.smallsticker.com' + item.itemImage} alt="product" class="w-full h-full object-center object-cover">
           </div>
           <div class="ml-4 flex-1 flex flex-col">
             <div>

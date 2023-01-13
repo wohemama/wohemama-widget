@@ -1,71 +1,80 @@
 <script>
-  import { wohemamaApi } from '../utils'
-  import { amapApi } from '../utils'
-  import QrCode from 'svelte-qrcode'
-  import Result from './Result.svelte'
+  import { wohemamaApi } from "../utils";
+  import { amapApi } from "../utils";
+  import QrCode from "svelte-qrcode";
+  import Result from "./Result.svelte";
 
-  import Cart from './Cart.svelte'
-  export let dataset
+  import Cart from "./Cart.svelte";
+  export let dataset;
 
-  const platform = navigator.platform
-  const isDesktop = /(Win32|Win16|WinCE|Mac68K|MacIntel|MacIntel|MacPPC|Linux mips64)/i.test(
-    platform
-  )
+  const platform = navigator.platform;
+  const isDesktop =
+    /(Win32|Win16|WinCE|Mac68K|MacIntel|MacIntel|MacPPC|Linux mips64)/i.test(
+      platform
+    );
 
-  let nodeRef
+  let nodeRef;
 
-  let name
-  let phone
+  let name;
+  let phone;
 
-  let province
-  let city
-  let district
-  let street
+  let province;
+  let city;
+  let district;
+  let street;
 
-  let payMethod
+  let payMethod;
 
-  let provinces = []
-  let cities = []
-  let districts = []
+  let provinces = [];
+  let cities = [];
+  let districts = [];
 
-  let check = true
-  let qrCodeValue = null
-  let payUrl = null
-  let timeID
+  let check = true;
+  let qrCodeValue = null;
+  let payUrl = null;
+  let timeID;
 
-  async function getNext(current = '') {
-    const res = await amapApi.get('/v3/config/district', {
+  async function getNext(current = "") {
+    const res = await amapApi.get("/v3/config/district", {
       params: {
         keywords: current,
         subdistrict: 1,
-        key: '98584feda0cc0dfe30da12ba75c12d8b',
+        key: "98584feda0cc0dfe30da12ba75c12d8b",
       },
-    })
-    if (res.data.status === '1') {
-      return res.data.districts[0].districts
+    });
+    if (res.data.status === "1") {
+      return res.data.districts[0].districts;
     } else {
-      throw new Error(res.data.info)
+      throw new Error(res.data.info);
     }
   }
 
   async function getProvince() {
-    provinces = await getNext()
-    cities = []
+    provinces = await getNext();
+    cities = [];
   }
 
   async function getCity() {
-    cities = await getNext(province)
-    districts = []
+    cities = await getNext(province);
+    districts = [];
   }
 
   async function getDistrict() {
-    districts = await getNext(city)
+    districts = await getNext(city);
   }
 
   async function pay() {
-    check = false
-    if (!!name && !!phone && !!province && !!city && !!district && !!street && !!payMethod) {
-      const res = await wohemamaApi.post('/api/orders', {
+    check = false;
+    if (
+      !!name &&
+      !!phone &&
+      !!province &&
+      !!city &&
+      !!district &&
+      !!street &&
+      !!payMethod
+    ) {
+      const res = await wohemamaApi.post("/api/orders", {
         name,
         phone,
         province,
@@ -75,46 +84,62 @@
         payMethod,
         cartData: localStorage.cartData,
         platform,
-        seller: window.WohemamaCartSettings.publicApiKey
-      })
-      qrCodeValue = null
+        seller: window.WohemamaCartSettings.publicApiKey,
+      });
+      qrCodeValue = null;
+      const target = document.querySelector("body");
+
+      if (res.status === 204) {
+        console.log(403)
+        return new Result({
+          target,
+          props: {
+            status: "服务器拒绝请求！",
+            conent: '服务器拒绝请求，请联系客服处理！'
+          },
+        });
+      }
 
       if (res.data.isQrcode) {
-        qrCodeValue = res.data.url
-        payUrl = res.data.url
-        
-        const outTradeNo = res.data.outTradeNo
+        qrCodeValue = res.data.url;
+        payUrl = res.data.url;
+
+        const outTradeNo = res.data.outTradeNo;
         timeID = setInterval(async () => {
-          const res = await wohemamaApi.get('/api/orders', { params:  { outTradeNo } })
-          console.log(res)
-          if (res.data.status && res.data.status === '支付成功') {
-            destroySelf()
-            const target = document.querySelector('body')
+          const res = await wohemamaApi.get("/api/orders", {
+            params: { outTradeNo },
+          });
+          console.log(res);
+          if (res.data.status && res.data.status === "支付成功") {
+            localStorage.cartData = null
+            destroySelf();
+
             new Result({
               target,
               props: {
-                status: res.data.status
+                status: res.data.status,
+                conent: '我们已收到您的订单，感谢您的购买，我们会第一时间发货，请耐心等待！'
               },
-            })
-            clearInterval(timeID)
+            });
+            clearInterval(timeID);
           }
-        }, 1000)
+        }, 1000);
       } else if (res.data.isH5) {
         location.href =
           res.data.url +
-          '&redirect_url=' +
+          "&redirect_url=" +
           encodeURIComponent(
             `http://localhost:3001/pay-return/?out_trade_no=${outTradeNo}`
-          )
-        return
+          );
+        return;
       } else {
-        location.href = res.data.url
+        location.href = res.data.url;
       }
     }
   }
 
   function destroySelf() {
-    nodeRef.parentNode.removeChild(nodeRef)
+    nodeRef.parentNode.removeChild(nodeRef);
   }
 </script>
 
@@ -138,7 +163,9 @@
         <h1 class="text-md font-medium leading-6 text-gray-900">收货人信息</h1>
         <div class="grid grid-cols-6 gap-6 mt-5">
           <div class="col-span-6 sm:col-span-3 ">
-            <label for="name" class="block text-sm font-medium text-gray-700">姓名</label>
+            <label for="name" class="block text-sm font-medium text-gray-700"
+              >姓名</label
+            >
             <input
               type="text"
               bind:value={name}
@@ -146,10 +173,14 @@
               autocomplete="name"
               class="mt-1 py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
             />
-            <span class="text-red-500" class:hidden={check || !!name}>姓名是必填项</span>
+            <span class="text-red-500" class:hidden={check || !!name}
+              >姓名是必填项</span
+            >
           </div>
           <div class="col-span-6 sm:col-span-3">
-            <label for="phone" class="block text-sm font-medium text-gray-700">电话</label>
+            <label for="phone" class="block text-sm font-medium text-gray-700"
+              >电话</label
+            >
             <input
               type="text"
               bind:value={phone}
@@ -167,7 +198,10 @@
             >
           </div>
           <div class="col-span-6 sm:col-span-3">
-            <label for="province" class="block text-sm font-medium text-gray-700">省份</label>
+            <label
+              for="province"
+              class="block text-sm font-medium text-gray-700">省份</label
+            >
             <select
               bind:value={province}
               on:focus={async () => await getProvince()}
@@ -185,12 +219,14 @@
             </select>
             <span
               class="text-red-500"
-              class:hidden={check || (province !== '请选择省份' && !!province)}
+              class:hidden={check || (province !== "请选择省份" && !!province)}
               >省份是必选项</span
             >
           </div>
           <div class="col-span-6 sm:col-span-6 lg:col-span-3">
-            <label for="city" class="block text-sm font-medium text-gray-700">城市</label>
+            <label for="city" class="block text-sm font-medium text-gray-700"
+              >城市</label
+            >
             <select
               bind:value={city}
               on:focus={async () => await getCity()}
@@ -208,12 +244,15 @@
             </select>
             <span
               class="text-red-500"
-              class:hidden={check || (city !== '请选择城市' && !!city)}
+              class:hidden={check || (city !== "请选择城市" && !!city)}
               >城市是必选项</span
             >
           </div>
           <div class="col-span-6 sm:col-span-3 lg:col-span-3">
-            <label for="district" class="block text-sm font-medium text-gray-700">区县</label>
+            <label
+              for="district"
+              class="block text-sm font-medium text-gray-700">区县</label
+            >
             <select
               bind:value={district}
               on:focus={async () => await getDistrict()}
@@ -231,12 +270,14 @@
             </select>
             <span
               class="text-red-500"
-              class:hidden={check || (district !== '请选择区县' && !!district)}
+              class:hidden={check || (district !== "请选择区县" && !!district)}
               >区县是必选项</span
             >
           </div>
           <div class="col-span-6">
-            <label for="street" class="block text-sm font-medium text-gray-700">详细地址</label>
+            <label for="street" class="block text-sm font-medium text-gray-700"
+              >详细地址</label
+            >
             <input
               type="text"
               bind:value={street}
@@ -244,7 +285,9 @@
               autocomplete="street"
               class="mt-1 py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
             />
-            <span class="text-red-500" class:hidden={check || !!street}>详细地址是必填项</span>
+            <span class="text-red-500" class:hidden={check || !!street}
+              >详细地址是必填项</span
+            >
           </div>
         </div>
         <div class="hidden sm:block" aria-hidden="true">
@@ -252,10 +295,14 @@
             <div class="border-t border-gray-200" />
           </div>
         </div>
-        <h1 class="text-md font-medium leading-6 text-gray-900">支付相关信息</h1>
+        <h1 class="text-md font-medium leading-6 text-gray-900">
+          支付相关信息
+        </h1>
         <div class="grid grid-cols-6 gap-6 mt-5">
           <div class="col-span-3">
-            <label for="street" class="block text-sm font-medium text-gray-700">支付方式</label>
+            <label for="street" class="block text-sm font-medium text-gray-700"
+              >支付方式</label
+            >
             <select
               bind:value={payMethod}
               id="pay-method"
@@ -274,14 +321,16 @@
               <button
                 on:click={pay}
                 class="w-full px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                >{isDesktop ? '确认信息并显示支付二维码' : '确认信息并跳转到支付APP'}</button
+                >{isDesktop
+                  ? "确认信息并显示支付二维码"
+                  : "确认信息并跳转到支付APP"}</button
               >
             </div>
           </div>
           <div class="col-span-3 flex justify-center">
             {#if qrCodeValue}
               <QrCode size={150} value={qrCodeValue} />
-            {:else if payMethod === 'alipay'}
+            {:else if payMethod === "alipay"}
               <iframe src={payUrl} title="支付宝二维码" />
             {/if}
           </div>

@@ -15,11 +15,14 @@ document.addEventListener("click", (e) => {
     e.target.getAttribute("class").split(" ").includes("wohemama-cart-add-item")
   ) {
     if (widget) widget.$destroy();
-    console.log(e.target.dataset)
+    const detail = e.target.dataset
+    console.log(detail, (detail.itemUrl === undefined))
+    if (detail.itemUrl === undefined) detail.itemUrl = location.href
+    console.log('detail2', detail, location.href)
     widget = new App({
       target,
       props: {
-        detail: e.target.dataset,
+        detail,
         dataset: { shipping: window.WohemamaCartSettings.shipping },
       },
     });
