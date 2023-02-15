@@ -2,7 +2,7 @@ import "./app.css";
 import App from "./App.svelte";
 
 window.WohemamaCartSettings = {
-  publicApiKey: "wuzhenyu@mail.smallsticker.com",
+  publicApiKey: "wuyuit@icloud.com",
   shipping: 0,
 };
 
