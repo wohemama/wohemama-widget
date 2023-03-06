@@ -3,12 +3,14 @@
   import Checkout from "./Checkout.svelte";
   export let detail;
   export let dataset;
+  export let onlyShow;
 
   let nodeRef;
 
   let parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
 
-  const findedItemIndex = parsedCart.findIndex(
+  if (!onlyShow) {
+    const findedItemIndex = parsedCart.findIndex(
     (i) => i.itemId === detail.itemId
   );
   if (findedItemIndex !== -1) {
@@ -16,6 +18,7 @@
   } else {
     const item = { ...detail, itemCount: 1 };
     parsedCart.push(item);
+  }
   }
 
   function destroySelf() {
