@@ -31,9 +31,7 @@ document.addEventListener("click", (e) => {
   ) {
     if (widget) widget.$destroy();
     const detail = e.target.dataset;
-    console.log(detail, detail.itemUrl === undefined);
     if (detail.itemUrl === undefined) detail.itemUrl = location.href;
-    console.log("detail2", detail, location.href);
     widget = new App({
       target,
       props: {

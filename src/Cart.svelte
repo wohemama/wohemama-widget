@@ -87,8 +87,8 @@
 </div>
 <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
   <div class="flex justify-between text-base font-medium text-gray-900">
-    <p>总计：</p>
-    <p>{new Big(totalPrice).plus(dataset.shipping)}</p>
+    <p>小计：</p>
+    <p>{totalPrice}</p>
   </div>
 
   <slot name="checkout" />

@@ -73,7 +73,7 @@
 
         <div slot="checkout">
           <p class="mt-0.5 text-sm text-gray-500">
-            结算价格包括运费 {window.WohemamaCartSettings.shipping} 元
+            运费将在结算时计算
           </p>
           <div class="mt-6">
             <button
