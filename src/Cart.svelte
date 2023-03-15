@@ -1,7 +1,6 @@
 <script>
   import Big from "big.js";
   export let parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
-  export let dataset;
 
   const itemCountTarget = document.querySelector(".wohemama-items-count");
   const totalPriceTarget = document.querySelector(".wohemama-total-price");
