@@ -90,12 +90,12 @@
       const target = document.querySelector("body");
 
       if (res.status === 204) {
-        console.log(403)
+        console.log(403);
         return new Result({
           target,
           props: {
             status: "服务器拒绝请求！",
-            conent: '服务器拒绝请求，请联系客服处理！'
+            conent: "服务器拒绝请求，请联系客服处理！",
           },
         });
       }
@@ -109,16 +109,16 @@
           const res = await wohemamaApi.get("/api/orders", {
             params: { outTradeNo },
           });
-          console.log(res);
           if (res.data.status && res.data.status === "支付成功") {
-            localStorage.cartData = null
+            localStorage.cartData = null;
             destroySelf();
 
             new Result({
               target,
               props: {
                 status: res.data.status,
-                conent: '我们已收到您的订单，感谢您的购买，我们会第一时间发货，请耐心等待！'
+                conent:
+                  "我们已收到您的订单，感谢您的购买，我们会第一时间发货，请耐心等待！",
               },
             });
             clearInterval(timeID);
@@ -340,10 +340,25 @@
     <div class="md:col-span-1 mt-5">
       <div class="px-4 sm:px-0 mr-5">
         <h1 class="text-md font-medium leading-6 text-gray-900">订单摘要</h1>
-        <div class="bg-white rounded-md mt-2 h-80 flex flex-col">
-          <Cart {dataset}>
-          
-          
+        <div class="bg-white rounded-md mt-2 h-full flex flex-col">
+          <Cart {dataset} let:totalPrice={totalPrice}>
+            <div slot="checkout">
+              <dl class="border-t border-gray-200  py-4">
+                <div
+                  class="flex justify-between text-base font-medium text-gray-900 "
+                >
+                  <dt>运费：</dt>
+                  <dd>5.00</dd>
+                </div>
+
+                <div
+                  class="flex items-center justify-between border-t border-gray-200 pt-6"
+                >
+                  <dt class="text-base font-medium">总计</dt>
+                  <dd class="text-base font-medium text-gray-900">{totalPrice}</dd>
+                </div>
+              </dl>
+            </div>
           </Cart>
         </div>
       </div>

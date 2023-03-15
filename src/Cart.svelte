@@ -36,7 +36,7 @@
 
   <div class="mt-8">
     <div class="flow-root">
-      <ul class="-my-6 divide-y divide-gray-200">
+      <ul class="my-6 divide-y divide-gray-200">
         {#each parsedCart as item, i}
           <li class="py-6 flex">
             <div
@@ -91,5 +91,5 @@
     <p>{totalPrice}</p>
   </div>
 
-  <slot name="checkout" />
+  <slot name="checkout" totalPrice={totalPrice} />
 </div>
