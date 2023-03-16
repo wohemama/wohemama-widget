@@ -1,18 +1,18 @@
 <script>
   import { createEventDispatcher, onMount } from "svelte";
   import Big from "big.js";
-  export let parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
+  export let parsedCart;
 
-  const dispatch = createEventDispatcher()
+  const dispatch = createEventDispatcher();
   function recomputeShiping() {
-    dispatch('reGetShipping', {
+    dispatch("reGetShipping", {
       count: Number(totalCount),
-      weight: Number(totalWeight)
-    })
+      weight: Number(totalWeight),
+    });
   }
   onMount(() => {
-    recomputeShiping()
-  })
+    recomputeShiping();
+  });
 
   const itemCountTarget = document.querySelector(".wohemama-items-count");
   const totalPriceTarget = document.querySelector(".wohemama-total-price");
@@ -44,7 +44,16 @@
 
   function removeItem(i) {
     parsedCart.splice(i, 1);
+
     parsedCart = [...parsedCart];
+
+    totalWeight = parsedCart
+      .map((i) => i.itemWeight || 0)
+      .reduce((m, n) => new Big(m).plus(n), 0);
+
+    totalCount = parsedCart
+      .map((i) => i.itemCount)
+      .reduce((m, n) => new Big(m).plus(n), 0);
   }
 </script>
 
@@ -92,7 +101,10 @@
                   <button
                     type="button"
                     class="font-medium text-indigo-600 hover:text-indigo-500"
-                    on:click={() => {removeItem(i); recomputeShiping()}}>删除</button
+                    on:click={() => {
+                      removeItem(i);
+                      recomputeShiping();
+                    }}>删除</button
                   >
                 </div>
               </div>

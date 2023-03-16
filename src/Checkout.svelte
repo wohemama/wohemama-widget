@@ -7,6 +7,7 @@
   import Cart from "./Cart.svelte";
   import Big from "big.js";
 
+  let parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
   let shipping = 0
 
   const platform = navigator.platform;
@@ -348,7 +349,7 @@
       <div class="px-4 sm:px-0 mr-5">
         <h1 class="text-md font-medium leading-6 text-gray-900">订单摘要</h1>
         <div class="bg-white rounded-md mt-2 h-full flex flex-col">
-          <Cart let:totalPrice on:reGetShipping={handleReGetShipping}>
+          <Cart  {parsedCart} let:totalPrice on:reGetShipping={handleReGetShipping}>
             <div slot="checkout">
               <dl class="border-t border-gray-200  py-4">
                 <div
