@@ -4,7 +4,6 @@ import Big from "big.js";
 
 window.WohemamaCartSettings = {
   publicApiKey: "wuzhenyu@mail.smallsticker.com",
-  shipping: 13,
 };
 
 const parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
@@ -37,7 +36,6 @@ document.addEventListener("click", (e) => {
       props: {
         detail,
         onlyShow: false,
-        dataset: { shipping: window.WohemamaCartSettings.shipping },
       },
     });
   } else if (
@@ -52,7 +50,6 @@ document.addEventListener("click", (e) => {
       props: {
         detail,
         onlyShow: true,
-        dataset: { shipping: window.WohemamaCartSettings.shipping },
       },
     });
   }

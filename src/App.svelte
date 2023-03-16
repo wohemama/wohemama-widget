@@ -2,7 +2,6 @@
   import Cart from "./Cart.svelte";
   import Checkout from "./Checkout.svelte";
   export let detail;
-  export let dataset;
   export let onlyShow;
 
   let nodeRef;
@@ -32,9 +31,6 @@
     const target = document.querySelector("body");
     new Checkout({
       target,
-      props: {
-        dataset: dataset,
-      },
     });
   }
 
@@ -106,7 +102,7 @@
 
 
         <div class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
-          <Cart {parsedCart} {dataset}>
+          <Cart {parsedCart}>
             <div slot="close" class="flex items-start justify-between">
               <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">
                 购物车
