@@ -1,10 +1,13 @@
 <script>
-  import { wohemamaApi } from "../utils";
+  import { redirectPayReturnHost, wohemamaApi } from "../utils";
   import { amapApi } from "../utils";
   import QrCode from "svelte-qrcode";
   import Result from "./Result.svelte";
 
   import Cart from "./Cart.svelte";
+  import Big from "big.js";
+
+  let shipping = 0
 
   const platform = navigator.platform;
   const isDesktop =
@@ -128,7 +131,7 @@
           res.data.url +
           "&redirect_url=" +
           encodeURIComponent(
-            `http://localhost:3001/pay-return/?out_trade_no=${outTradeNo}`
+            `${redirectPayReturnHost}/pay-return/?out_trade_no=${outTradeNo}`
           );
         return;
       } else {
@@ -139,6 +142,11 @@
 
   function destroySelf() {
     nodeRef.parentNode.removeChild(nodeRef);
+  }
+
+  async function handleReGetShipping(e) {
+    const res =  await wohemamaApi.get('/api/shipping', {params: {userEmail: window.WohemamaCartSettings.publicApiKey, count: e.detail.count, weight: e.detail.weight}})
+    shipping = res.data.shipping
   }
 </script>
 
@@ -340,21 +348,23 @@
       <div class="px-4 sm:px-0 mr-5">
         <h1 class="text-md font-medium leading-6 text-gray-900">订单摘要</h1>
         <div class="bg-white rounded-md mt-2 h-full flex flex-col">
-          <Cart let:totalPrice={totalPrice}>
+          <Cart let:totalPrice on:reGetShipping={handleReGetShipping}>
             <div slot="checkout">
               <dl class="border-t border-gray-200  py-4">
                 <div
                   class="flex justify-between text-base font-medium text-gray-900 "
                 >
                   <dt>运费：</dt>
-                  <dd>5.00</dd>
+                  <dd>{shipping}</dd>
                 </div>
 
                 <div
                   class="flex items-center justify-between border-t border-gray-200 pt-6"
                 >
                   <dt class="text-base font-medium">总计</dt>
-                  <dd class="text-base font-medium text-gray-900">{totalPrice}</dd>
+                  <dd class="text-base font-medium text-gray-900">
+                    {(new Big(Number(totalPrice)).plus(Number(shipping)))}
+                  </dd>
                 </div>
               </dl>
             </div>

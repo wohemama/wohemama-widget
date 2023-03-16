@@ -1,6 +1,18 @@
 <script>
+  import { createEventDispatcher, onMount } from "svelte";
   import Big from "big.js";
   export let parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
+
+  const dispatch = createEventDispatcher()
+  function recomputeShiping() {
+    dispatch('reGetShipping', {
+      count: Number(totalCount),
+      weight: Number(totalWeight)
+    })
+  }
+  onMount(() => {
+    recomputeShiping()
+  })
 
   const itemCountTarget = document.querySelector(".wohemama-items-count");
   const totalPriceTarget = document.querySelector(".wohemama-total-price");
@@ -20,6 +32,12 @@
         .map((i) => new Big(i.itemPrice).times(i.itemCount))
         .reduce((m, n) => new Big(m).plus(n), 0);
   }
+  $: totalWeight = parsedCart
+    .map((i) => i.itemWeight || 0)
+    .reduce((m, n) => new Big(m).plus(n), 0);
+  $: totalCount = parsedCart
+    .map((i) => i.itemCount)
+    .reduce((m, n) => new Big(m).plus(n), 0);
   $: totalPrice = parsedCart
     .map((i) => new Big(i.itemPrice).times(i.itemCount))
     .reduce((m, n) => new Big(m).plus(n), 0);
@@ -67,13 +85,14 @@
                     type="number"
                     min="1"
                     bind:value={item.itemCount}
+                    on:change={recomputeShiping}
                   />
                 </p>
                 <div class="flex">
                   <button
                     type="button"
                     class="font-medium text-indigo-600 hover:text-indigo-500"
-                    on:click={() => removeItem(i)}>删除</button
+                    on:click={() => {removeItem(i); recomputeShiping()}}>删除</button
                   >
                 </div>
               </div>
@@ -90,5 +109,5 @@
     <p>{totalPrice}</p>
   </div>
 
-  <slot name="checkout" totalPrice={totalPrice} />
+  <slot name="checkout" {totalPrice} />
 </div>

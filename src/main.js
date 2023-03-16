@@ -3,7 +3,7 @@ import App from "./App.svelte";
 import Big from "big.js";
 
 window.WohemamaCartSettings = {
-  publicApiKey: "wuzhenyu@mail.smallsticker.com",
+  publicApiKey: "wuzhenyu@wohemama.com",
 };
 
 const parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
