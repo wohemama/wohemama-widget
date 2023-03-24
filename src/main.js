@@ -2,10 +2,6 @@ import "./app.css";
 import App from "./App.svelte";
 import Big from "big.js";
 
-window.WohemamaCartSettings = {
-  publicApiKey: "wuzhenyu@wohemama.com",
-};
-
 const parsedCart = JSON.parse(localStorage.cartData ?? null) || [];
 
 const target = document.querySelector("body");
