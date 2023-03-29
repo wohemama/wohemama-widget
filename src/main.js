@@ -27,6 +27,7 @@ document.addEventListener("click", (e) => {
     if (widget) widget.$destroy();
     const detail = e.target.dataset;
     if (detail.itemUrl === undefined) detail.itemUrl = location.href;
+    if (detail.itemImage && !(new RegExp("^http.*$").test(detail.itemImage))) detail.itemImage = location.href + detail.itemImage
     widget = new App({
       target,
       props: {

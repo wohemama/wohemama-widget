@@ -65,15 +65,18 @@
       <ul class="my-6 divide-y divide-gray-200">
         {#each parsedCart as item, i}
           <li class="py-6 flex">
-            <div
-              class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden"
-            >
-              <img
-                src={"https://backend.smallsticker.com" + item.itemImage}
-                alt="product"
-                class="w-full h-full object-center object-cover"
-              />
-            </div>
+            {#if item.itemImage}
+              <div
+                class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden"
+              >
+                <img
+                  src={item.itemImage}
+                  alt="product"
+                  class="w-full h-full object-center object-cover"
+                />
+              </div>
+            {/if}
+
             <div class="ml-4 flex-1 flex flex-col">
               <div>
                 <div
